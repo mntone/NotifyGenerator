@@ -1,0 +1,8 @@
+﻿    [NotifyGenerate]
+    class TestClass
+    {
+        public int A { get; set; }
+        [NotifyUngenerate]
+        public string B { get; set; }
+    }
+}

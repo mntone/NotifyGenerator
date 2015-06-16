@@ -1,0 +1,42 @@
+﻿    [NotifyGenerate(NameConversionMethod = NotifyNameConversionMethod.LeadingLowerCaseLetters)]
+    class TestClass : INotifyPropertyChanged
+    {
+        public int A
+        {
+            get { return this.a; }
+            set { this._SetValue(ref this.a, value, aStaticPropertyChangedEventArgs); }
+        }
+        public string B
+        {
+            get { return this.b; }
+            set { this._SetValue(ref this.b, value, bStaticPropertyChangedEventArgs); }
+        }
+
+        #region NotifyGenerator
+
+        [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
+        private int a;
+        [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
+        private string b;
+
+        [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
+        private static readonly PropertyChangedEventArgs aStaticPropertyChangedEventArgs = new PropertyChangedEventArgs(nameof(A));
+        [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
+        private static readonly PropertyChangedEventArgs bStaticPropertyChangedEventArgs = new PropertyChangedEventArgs(nameof(B));
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private bool _SetValue<T>(ref T storage, T value, PropertyChangedEventArgs e)
+        {
+            if (System.Collections.Generic.EqualityComparer<T>.Default.Equals(storage, value))
+            {
+                return false;
+            }
+            storage = value;
+            System.Threading.Interlocked.CompareExchange(ref this.PropertyChanged, null, null)?.Invoke(this, e);
+            return true;
+        }
+
+        #endregion
+    }
+}

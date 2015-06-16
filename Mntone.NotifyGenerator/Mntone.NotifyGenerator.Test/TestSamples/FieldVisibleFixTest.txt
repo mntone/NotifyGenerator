@@ -1,0 +1,38 @@
+﻿    [NotifyGenerate(IsFieldHidden = false)]
+    class TestClass : INotifyPropertyChanged
+    {
+        public int A
+        {
+            get { return this._a; }
+            set { this._SetValue(ref this._a, value, _aStaticPropertyChangedEventArgs); }
+        }
+        public string B
+        {
+            get { return this._b; }
+            set { this._SetValue(ref this._b, value, _bStaticPropertyChangedEventArgs); }
+        }
+
+        #region NotifyGenerator
+
+        private int _a;
+        private string _b;
+
+        private static readonly PropertyChangedEventArgs _aStaticPropertyChangedEventArgs = new PropertyChangedEventArgs(nameof(A));
+        private static readonly PropertyChangedEventArgs _bStaticPropertyChangedEventArgs = new PropertyChangedEventArgs(nameof(B));
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private bool _SetValue<T>(ref T storage, T value, PropertyChangedEventArgs e)
+        {
+            if (System.Collections.Generic.EqualityComparer<T>.Default.Equals(storage, value))
+            {
+                return false;
+            }
+            storage = value;
+            System.Threading.Interlocked.CompareExchange(ref this.PropertyChanged, null, null)?.Invoke(this, e);
+            return true;
+        }
+
+        #endregion
+    }
+}
